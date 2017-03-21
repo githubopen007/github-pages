@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			.circle{ height: 80px; width: 80px; border:1px solid #0f0;}
+		</style>
+	</head>
+	<body>
+		<br />
+		<br />
+		<br />
+		<div class="circle" data-pre="80"></div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<div class="circle" data-pre="90"></div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<div class="circle" data-pre="20"></div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<div class="circle" data-pre="10"></div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<div class="circle" data-pre="45"></div>
+		<br />
+		<br />		
+		<script>
+		function DrawCircle(elem){
+			this.elem = elem;
+			this.init();// 默认初始化
+			// console.log(this)
+		}
+		DrawCircle.prototype = {
+			constructor:DrawCircle,
+			init:function(){
+				this.bindDom() // 渲染Dom
+				this.bindEvent(); // 绑定事件
+			},		
+			// 初始化
+			bindDom:function(){
+				// 1,创建一个 canvas 插入到 this.elem里面
+				// 设置cavas 的宽高和 this.elem的宽高一样
+				// 获取 this.elem 里面的data-pre 属性
+				this.canvas = document.createElement("canvas"); // 1
+				this.cw = this.elem.offsetWidth;		// 2
+				this.ch = this.elem.offsetHeight;		// 2
+				this.canvas.setAttribute("width",this.cw);	// 2
+				this.canvas.setAttribute("height",this.ch);	// 2
+				this.elem.innerHTML = "";// 清空elem 里面的内容
+				this.elem.appendChild(this.canvas);// 1，插入到 this.elem里面
+				this.pre = this.elem.getAttribute("data-pre");
+				this.ctx = this.canvas.getContext("2d");// 得到二维画布
+				this.isDraw=false;//有没有画过圆
+			},	
+			// 渲染Dom
+			bindEvent:function(){
+				// 当元素this.elem 的距离顶部的位置 小于屏幕的高度是 drawColor
+				// 监听画面滚动
+				var that = this;
+				console.log(this)
+				window.scroll(0,1);//默认触发一次滚动
+				window.addEventListener("scroll",draw);
+				//让窗口绑定滚动事件
+				function draw(){
+					// 得到元素距离顶部的位置
+					var st=that.elem.getBoundingClientRect().top;
+				// getBoundingClientRect()得到元素距离浏览器四周的位置和自身的宽高
+//				.left .width .height .bottom
+					if(st<window.innerHeight-100){
+						// 如果小于浏览器视口的高 执行动态的画圆
+						that.drawAnimate();
+					}
+				}
+				
+			},	// 绑定事件
+			drawBasc:function(){
+				// 1，开始绘制
+				// 2，绘制的颜色 和粗细
+				// 3，画圆
+				this.ctx.beginPath();//开始绘制
+				this.ctx.lineWidth=this.cw/20; //设置粗细
+				this.ctx.strokeStyle="#EEE";//设置颜色
+				this.ctx.arc(this.cw/2,this.cw/2,this.cw/2-this.cw/20,0,2*Math.PI);
+				this.ctx.stroke();//绘制
+				
+			},	// 画灰色的底圆
+			drawColor:function(pre){
+				this.ctx.clearRect(0,0,this.cw,this.ch);//清除画布
+				this.drawBasc();//画底圆；
+				this.ctx.beginPath();//开始绘制
+				this.ctx.lineWidth=this.cw/20; //设置粗细
+				this.ctx.lineCap="round"; // 设置端点
+				this.ctx.strokeStyle="red";//设置颜色
+				this.ctx.arc(this.cw/2,this.cw/2,this.cw/2-this.cw/20,0,2*Math.PI/100*pre);
+				this.ctx.stroke();//绘制
+				
+			},	// 画颜色
+			drawAnimate:function(){
+				if(this.isDraw){return};//如果画过就不让画
+				
+				var that = this;
+				for(var i=1; i<=100; i++){
+					(function(i){
+						setTimeout(function(){
+						that.drawColor(that.pre/100*i); // 画彩色的圆	
+						},i*10)
+					})(i)
+				}
+				this.isDraw=true;
+			}// 动态的画
+		}
+			
+			
+			
+		//============== new 实例
+		var circles = document.querySelectorAll(".circle");
+		// 选择到所有的circle 元素		
+		for(var i=0; i<circles.length; i++){
+			var d = new DrawCircle(circles[i]);
+			// 实例化 DrawCircle
+		}
+		
+		
+		
+		
+			
+		</script>	
+	</body>
+</html>
