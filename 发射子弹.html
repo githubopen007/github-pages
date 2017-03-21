@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="">
+    <style type="text/css" media="screen">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        overflow: hidden;
+    }
+    
+    .box {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        left: 500px;
+        bottom: 0px;
+        background-color: #cccccc;
+    }
+    
+    .bullet {
+        width: 10px;
+        height: 10px;
+        background-color: brown;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        /*display: none;*/
+    }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="bullet"></div>
+        
+    </div>
+    <script>
+    window.onload = function() {
+        var bulletElement =  document.getElementsByClassName('bullet')[0];
+        var divEle = document.getElementsByClassName('box')[0];
+        var height = document.documentElement.clientHeight;
+        var width = document.documentElement.clientWidth;
+        // var height = window.innerHeight;
+        // var width  = window.innerWidth;
+
+        // 在文档上按照keydown的事件处理
+        window.onkeydown = function(ev) {
+            var e = ev || event;
+            console.log(e);
+            console.log(typeof(e));
+            var code = e.keyCode;
+            switch (code) {
+                case 32:var timer = setInterval(function(){
+                  var currentBottom = getElementStyleVale(divEle, 'bottom');
+                  var currentTop = getElementStyleVale(bulletElement,'top');
+
+                  if(Math.abs(parseInt(currentTop))>=height-parseInt(currentBottom)-60){
+                     // bulletElement.style.display = 'none';
+                     bulletElement.style.top = 20+'px';
+                     console.log(bulletElement.style.top)
+                     clearInterval(timer);
+                  }else{
+                     bulletElement.style.top = parseInt(currentTop)-10+'px';
+                  }
+                },20)
+                break;
+                        
+                case 37: //左
+                    var currentLeft = getElementStyleVale(divEle, 'left');
+                    if (parseInt(currentLeft) <= 0) {
+                        currentLeft = '0px';
+                        divEle.style.left = currentLeft;
+                    } else {
+                        divEle.style.left = (parseInt(currentLeft) - 20) + 'px';
+                    }
+
+
+                    break;
+                case 38: //上
+                    var currentBottom = getElementStyleVale(divEle, 'bottom');
+                    if (parseInt(currentBottom) >= parseInt(height) - 50) {
+                        currentBottom = (parseInt(height) - 50) + 'px';
+                        divEle.style.bottom = currentBottom;
+                    } else {
+                        divEle.style.bottom = (parseInt(currentBottom) + 20) + 'px';
+                    }
+
+                    break;
+                case 39: //右
+                    var currentLeft = getElementStyleVale(divEle, 'left');
+                    if (parseInt(currentLeft) >= parseInt(width) - 50) {
+                        currentLeft = (parseInt(width) - 50) + 'px';
+                        divEle.style.left = currentLeft;
+                    } else {
+                        divEle.style.left = (parseInt(currentLeft) + 20) + 'px';
+                    }
+
+                    break;
+                case 40: //下
+                    var currentBottom = getElementStyleVale(divEle, 'bottom');
+                    if (parseInt(currentBottom) <= 0) {
+                        currentBottom = '0px';
+                        divEle.style.bottom = currentBottom;
+                    } else {
+                        divEle.style.bottom = (parseInt(currentBottom) - 20) + 'px';
+                    }
+
+                    break;
+            }
+        }
+
+
+        function getElementStyleVale(ele, styleName) {
+            if (ele.currentStyle) {
+                return ele.currentStyle[styleName];
+            } else {
+                return getComputedStyle(ele, null)[styleName];
+            }
+        }
+    }
+    </script>
+</body>
+
+</html>
